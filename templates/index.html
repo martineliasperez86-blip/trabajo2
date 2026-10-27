@@ -5,22 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Mi cuenta</title>
   <style>
-    body { font-family: Arial, sans-serif; background: #f0f2f5; margin: 0; padding: 20px; }
-    .tarjeta { max-width: 500px; margin: 40px auto; background: #fff; padding: 28px;
-               border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,.1); }
-    h1 { margin-top: 0; color: #333; }
+    body { font-family: Arial, sans-serif; background: #0f172a; margin: 0; padding: 20px; }
+    .marca-agua { position: fixed; top: 12px; left: 16px; font-size: 20px; color: gray;
+                  font-weight: bold; letter-spacing: 2px; pointer-events: none; user-select: none; }
+    .tarjeta { max-width: 500px; margin: 40px auto; background: #1e293b; padding: 28px;
+               border-radius: 12px; border-top: 4px solid #14b8a6;
+               box-shadow: 0 4px 14px rgba(0,0,0,.4); }
+    h1 { margin-top: 0; color: #f1f5f9; }
     table { width: 100%; border-collapse: collapse; margin: 16px 0; }
-    td { padding: 10px; border-bottom: 1px solid #eee; }
-    td:first-child { font-weight: bold; color: #555; width: 45%; }
-    .boton { display: inline-block; padding: 10px 18px; background: #d93025; color: #fff;
-             text-decoration: none; border-radius: 4px; }
-    .boton:hover { background: #a52714; }
-    .mensaje { max-width: 500px; margin: 10px auto; padding: 12px; border-radius: 4px; }
-    .exito { background: #d4edda; color: #155724; }
-    .error { background: #f8d7da; color: #721c24; }
+    td { padding: 10px; border-bottom: 1px solid #334155; color: #e2e8f0; }
+    td:first-child { font-weight: bold; color: #5eead4; width: 45%; }
+    .boton { display: inline-block; padding: 10px 18px; background: #f59e0b; color: #0f172a;
+             text-decoration: none; border-radius: 6px; font-weight: bold; }
+    .boton:hover { background: #d97706; }
+    .mensaje { max-width: 500px; margin: 10px auto; padding: 12px; border-radius: 6px; }
+    .exito { background: #064e3b; color: #a7f3d0; }
+    .error { background: #7f1d1d; color: #fecaca; }
   </style>
 </head>
 <body>
+  <div class="marca-agua">M. E. P. A.</div>
+
   {% with mensajes = get_flashed_messages(with_categories=true) %}
     {% for categoria, texto in mensajes %}
       <div class="mensaje {{ categoria }}">{{ texto }}</div>
@@ -35,7 +40,7 @@
       <tr><td>Saldo</td><td>$ {{ "{:,.2f}".format(usuario.saldo) }}</td></tr>
       <tr><td>Total de abonos</td><td>$ {{ "{:,.2f}".format(usuario.total_abonos) }}</td></tr>
     </table>
-    <a class="boton" href="{{ url_for('logout') }}">Cerrar sesión</a>
+    <a class="boton" href="{{ url_for('logout') }}">Cerrar_sesión</a>
   </div>
 </body>
 </html>
