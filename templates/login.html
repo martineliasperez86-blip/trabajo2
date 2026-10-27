@@ -5,59 +5,165 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Acceso de clientes</title>
   <style>
+    :root {
+      --fondo: #f5f6f8;
+      --superficie: #ffffff;
+      --tinta: #16202e;
+      --tenue: #5d6877;
+      --linea: #d8dce2;
+      --acento: #1f3a5f;
+      --acento-hover: #172c48;
+      --foco: #3b6aa8;
+      --ok-fondo: #eef6f0;  --ok-texto: #1d5b35;  --ok-borde: #b9dcc5;
+      --err-fondo: #fbefee; --err-texto: #8a2a22; --err-borde: #eec3bf;
+    }
     * { box-sizing: border-box; }
-    body { font-family: Arial, sans-serif; background: #f0f2f5; margin: 0; padding: 20px; }
-    .contenedor { max-width: 800px; margin: 30px auto; display: flex; gap: 20px; flex-wrap: wrap; }
-    .tarjeta { flex: 1; min-width: 280px; background: #fff; padding: 24px;
-               border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,.1); }
-    h1 { text-align: center; color: #333; }
-    h2 { margin-top: 0; color: #333; }
-    label { display: block; margin: 12px 0 4px; font-size: 14px; color: #555; }
-    input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 15px; }
-    button { width: 100%; margin-top: 18px; padding: 11px; border: 0; border-radius: 4px;
-             background: #1a73e8; color: #fff; font-size: 15px; cursor: pointer; }
-    button:hover { background: #1558b0; }
-    .verde { background: #2e9e5b; } .verde:hover { background: #237a46; }
-    .mensaje { max-width: 800px; margin: 10px auto; padding: 12px; border-radius: 4px; }
-    .exito { background: #d4edda; color: #155724; }
-    .error { background: #f8d7da; color: #721c24; }
+    body {
+      margin: 0; min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px;
+      background: var(--fondo); color: var(--tinta);
+      font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+      font-size: 15px; line-height: 1.5;
+    }
+    main { width: 100%; max-width: 380px; }
+
+    .marca { margin: 0 0 20px; font-size: 14px; font-weight: 600; color: var(--tenue); letter-spacing: .01em; }
+    .panel {
+      background: var(--superficie);
+      border: 1px solid var(--linea);
+      border-radius: 6px;
+      padding: 32px 28px 28px;
+    }
+    h1 { margin: 0 0 4px; font-size: 22px; font-weight: 600; letter-spacing: -.01em; }
+    .sub { margin: 0 0 24px; color: var(--tenue); }
+
+    label { display: block; margin: 16px 0 6px; font-size: 13.5px; font-weight: 600; }
+    input {
+      width: 100%; padding: 10px 12px;
+      font: inherit; color: var(--tinta);
+      background: var(--superficie);
+      border: 1px solid var(--linea); border-radius: 4px;
+    }
+    input:hover { border-color: #b9bfc8; }
+    input:focus-visible, button:focus-visible {
+      outline: 2px solid var(--foco); outline-offset: 2px; border-color: var(--foco);
+    }
+    .ayuda { margin: 6px 0 0; font-size: 13px; color: var(--tenue); }
+
+    .principal {
+      width: 100%; margin-top: 24px; padding: 11px 14px;
+      font: inherit; font-weight: 600; color: #fff;
+      background: var(--acento); border: 0; border-radius: 4px; cursor: pointer;
+    }
+    .principal:hover { background: var(--acento-hover); }
+
+    .alterno {
+      margin: 22px 0 0; padding-top: 18px;
+      border-top: 1px solid var(--linea);
+      font-size: 14px; color: var(--tenue);
+    }
+    .enlace {
+      padding: 0; font: inherit; font-weight: 600; color: var(--acento);
+      background: none; border: 0; cursor: pointer;
+      text-decoration: underline; text-underline-offset: 3px;
+    }
+    .enlace:hover { color: var(--acento-hover); }
+
+    .mensaje {
+      margin: 0 0 16px; padding: 10px 12px;
+      font-size: 14px; border: 1px solid; border-radius: 4px;
+    }
+    .exito { background: var(--ok-fondo);  color: var(--ok-texto);  border-color: var(--ok-borde); }
+    .error { background: var(--err-fondo); color: var(--err-texto); border-color: var(--err-borde); }
+
+    [hidden] { display: none !important; }
+    @media (max-width: 420px) { .panel { padding: 26px 20px 22px; } }
   </style>
 </head>
 <body>
-  <h1>Sistema de clientes</h1>
+  <main>
+    <p class="marca">Sistema de clientes</p>
 
-  {% with mensajes = get_flashed_messages(with_categories=true) %}
-    {% for categoria, texto in mensajes %}
-      <div class="mensaje {{ categoria }}">{{ texto }}</div>
-    {% endfor %}
-  {% endwith %}
+    <div class="panel">
+      {% with mensajes = get_flashed_messages(with_categories=true) %}
+        {% for categoria, texto in mensajes %}
+          <div class="mensaje {{ categoria }}" role="alert">{{ texto }}</div>
+        {% endfor %}
+      {% endwith %}
 
-  <div class="contenedor">
-    <div class="tarjeta">
-      <h2>Iniciar sesión</h2>
-      <form method="post" action="{{ url_for('login') }}">
-        <input type="hidden" name="accion" value="login">
-        <label for="l_cedula">Cédula</label>
-        <input id="l_cedula" name="cedula" required maxlength="20">
-        <label for="l_clave">Contraseña</label>
-        <input id="l_clave" type="password" name="clave" required>
-        <button type="submit">Entrar</button>
-      </form>
+      <!-- Vista: iniciar sesión -->
+      <section id="vista-login" aria-labelledby="titulo-login">
+        <h1 id="titulo-login">Iniciar sesión</h1>
+        <p class="sub">Ingresa con tu cédula y contraseña.</p>
+
+        <form method="post" action="{{ url_for('login') }}">
+          <input type="hidden" name="accion" value="login">
+
+          <label for="l_cedula">Cédula</label>
+          <input id="l_cedula" name="cedula" required maxlength="20" autocomplete="username">
+
+          <label for="l_clave">Contraseña</label>
+          <input id="l_clave" type="password" name="clave" required autocomplete="current-password">
+
+          <button type="submit" class="principal">Iniciar sesión</button>
+        </form>
+
+        <p class="alterno">
+          ¿Aún no tienes cuenta?
+          <button type="button" class="enlace" data-mostrar="registro" aria-controls="vista-registro" aria-expanded="false">Crear una cuenta</button>
+        </p>
+      </section>
+
+      <!-- Vista: registro (oculta hasta que se pulsa el botón) -->
+      <section id="vista-registro" aria-labelledby="titulo-registro" hidden>
+        <h1 id="titulo-registro">Crear cuenta</h1>
+        <p class="sub">Completa tus datos para registrarte.</p>
+
+        <form method="post" action="{{ url_for('login') }}">
+          <input type="hidden" name="accion" value="registro">
+
+          <label for="r_cedula">Cédula</label>
+          <input id="r_cedula" name="cedula" required maxlength="20" autocomplete="off">
+
+          <label for="r_nombre">Nombre completo</label>
+          <input id="r_nombre" name="nombre" required maxlength="100" autocomplete="name">
+
+          <label for="r_clave">Contraseña</label>
+          <input id="r_clave" type="password" name="clave" required minlength="6" autocomplete="new-password" aria-describedby="ayuda-clave">
+          <p id="ayuda-clave" class="ayuda">Mínimo 6 caracteres.</p>
+
+          <button type="submit" class="principal">Crear cuenta</button>
+        </form>
+
+        <p class="alterno">
+          ¿Ya tienes cuenta?
+          <button type="button" class="enlace" data-mostrar="login" aria-controls="vista-login">Iniciar sesión</button>
+        </p>
+      </section>
     </div>
+  </main>
 
-    <div class="tarjeta">
-      <h2>Registrarse</h2>
-      <form method="post" action="{{ url_for('login') }}">
-        <input type="hidden" name="accion" value="registro">
-        <label for="r_cedula">Cédula</label>
-        <input id="r_cedula" name="cedula" required maxlength="20">
-        <label for="r_nombre">Nombre</label>
-        <input id="r_nombre" name="nombre" required maxlength="100">
-        <label for="r_clave">Contraseña (mín. 6 caracteres)</label>
-        <input id="r_clave" type="password" name="clave" required minlength="6">
-        <button type="submit" class="verde">Crear cuenta</button>
-      </form>
-    </div>
-  </div>
+  <script>
+    (function () {
+      var vistas = {
+        login: document.getElementById("vista-login"),
+        registro: document.getElementById("vista-registro")
+      };
+      var primerCampo = { login: "l_cedula", registro: "r_cedula" };
+
+      function mostrar(nombre) {
+        Object.keys(vistas).forEach(function (k) { vistas[k].hidden = (k !== nombre); });
+        var campo = document.getElementById(primerCampo[nombre]);
+        if (campo) { campo.focus(); }
+      }
+
+      document.querySelectorAll("[data-mostrar]").forEach(function (boton) {
+        boton.addEventListener("click", function () {
+          mostrar(boton.getAttribute("data-mostrar"));
+        });
+      });
+    })();
+  </script>
 </body>
 </html>
